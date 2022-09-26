@@ -114,7 +114,7 @@ func (client MeteocielClient) GetForecast(forecast ForecastType, station Meteoci
 
 	selection := doc.Find("td.Style1 center table tbody tr td table tbody").First().Find("tr[bgcolor='#CCFFFF'], tr[bgcolor='#DDEEFF']")
 
-	var currentDate time.Time
+	currentDate := time.Now()
 
 	selection.Each(func(i int, tr *goquery.Selection) {
 		dateSpan := tr.Find("td[rowspan]").First()
@@ -127,7 +127,12 @@ func (client MeteocielClient) GetForecast(forecast ForecastType, station Meteoci
 				return
 			}
 
-			currentDate = time.Date(time.Now().Year(), time.Now().Month(), dayNumber, 0, 0, 0, 0, time.Now().Location())
+			newDate := time.Date(time.Now().Year(), time.Now().Month(), dayNumber, 0, 0, 0, 0, time.Now().Location())
+			if newDate.Before(currentDate) {
+				newDate = newDate.AddDate(0, 1, 0)
+			}
+
+			currentDate = newDate
 		}
 
 		date := tr.Find("td").First().Text()
