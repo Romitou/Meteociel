@@ -1,4 +1,4 @@
-package main
+package meteociel
 
 import (
 	"github.com/PuerkitoBio/goquery"
